@@ -10,18 +10,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func main() {
-	config, err := util.LoadConfig(".")
-	if err != nil {
-		log.Fatal("cannot load config")
-	}
-	connPool, err := pgxpool.New(context.Background(), config.DBSource)
-	if err != nil {
-		log.Fatal("cannot connect to db")
-	}
-
-	db.NewStore(connPool)
-}
 
 func runGinServer(config util.Config, store db.Store) {
 	server, err := api.NewServer(config, store)
@@ -33,4 +21,18 @@ func runGinServer(config util.Config, store db.Store) {
 	if err != nil {
 		log.Fatal("Cannot")
 	}
+}
+
+func main() {
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatal("cannot load config")
+	}
+	connPool, err := pgxpool.New(context.Background(), config.DBSource)
+	if err != nil {
+		log.Fatal("cannot connect to db")
+	}
+
+	store := db.NewStore(connPool)
+	runGinServer(config,store)
 }
