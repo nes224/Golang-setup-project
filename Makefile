@@ -30,4 +30,7 @@ migratedown1:
 sqlc:
 	sqlc generate
 
+test:
+	go test -v -cover -short ./...
+
 .PHONY: postgres migratefolder new_migration createdb dropdb migrateup migratedown sqlc
