@@ -1,0 +1,22 @@
+version: "3"
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+    environment:
+      - DB_SOURCE=postgresql://root:secret@postgres:5432/simple_bank?sslmode=disable
+    entrypoint:
+      [
+        "/app/wait-for.sh",
+        "postgres:5432",
+        "--",
+        "/app/start.sh"
+      ]
+    command: [ "/app/main" ]
+
+volumes:
+  data-volume:
