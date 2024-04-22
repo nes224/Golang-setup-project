@@ -7,13 +7,13 @@ import (
 	"testing"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/abs/bestinter/util"
+	"github.com/abs/bestinter/internal/config"
 )
 
 var testStore Store
 
 func TestMain(m *testing.M) {
-	config, err := util.LoadConfig("../..")
+	config, err := config.LoadConfig("../..")
 	if err != nil {
 		log.Fatal("cannot load config:", err)
 	}

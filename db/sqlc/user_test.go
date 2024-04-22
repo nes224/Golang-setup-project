@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/abs/bestinter/util"
+	"github.com/abs/bestinter/internal/util"
 	"github.com/stretchr/testify/require"
 )
 

@@ -4,14 +4,13 @@ import (
 	"context"
 	"log"
 
-	"github.com/abs/bestinter/api"
+	"github.com/abs/bestinter/internal/api"
 	db "github.com/abs/bestinter/db/sqlc"
-	"github.com/abs/bestinter/util"
+	"github.com/abs/bestinter/internal/config"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-
-func runGinServer(config util.Config, store db.Store) {
+func runGinServer(config config.Config, store db.Store) {
 	server, err := api.NewServer(config, store)
 	if err != nil {
 		log.Fatal("Cannot create server")
@@ -24,7 +23,7 @@ func runGinServer(config util.Config, store db.Store) {
 }
 
 func main() {
-	config, err := util.LoadConfig(".")
+	config, err := config.LoadConfig(".")
 	if err != nil {
 		log.Fatal("cannot load config")
 	}
@@ -34,5 +33,5 @@ func main() {
 	}
 
 	store := db.NewStore(connPool)
-	runGinServer(config,store)
+	runGinServer(config, store)
 }
