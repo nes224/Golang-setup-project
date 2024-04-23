@@ -24,6 +24,20 @@ func RandomOwner() string {
 	return RandomString(6)
 }
 
+func RandomRole() string {
+
+	role := []string{
+		"root",
+		"admin",
+	}
+
+	return role[rand.Intn(1)]
+}
+
+func RandomeEnable() int {
+	return rand.Intn(1)
+}
+
 // RandomEmail
 func RandomEmail() string {
 	return fmt.Sprintf("%s@email.com", RandomString(6))

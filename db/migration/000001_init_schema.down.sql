@@ -1,3 +1,3 @@
-DROP TABLE IF EXISTS entries;
-DROP TABLE IF EXISTS transfers;
-DROP TABLE IF EXISTS accounts;
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS user_connection;
+DROP TABLE IF EXISTS user_pool;

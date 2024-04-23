@@ -5,39 +5,37 @@
 package db
 
 import (
+	"time"
+
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type Account struct {
-	ID        int64              `json:"id"`
-	Owner     string             `json:"owner"`
-	Balance   int64              `json:"balance"`
-	Currency  string             `json:"currency"`
-	CreatedAt pgtype.Timestamptz `json:"created_at"`
-}
-
-type Entry struct {
-	ID        int64 `json:"id"`
-	AccountID int64 `json:"account_id"`
-	// can be negative or positive
-	Amount    int64              `json:"amount"`
-	CreatedAt pgtype.Timestamptz `json:"created_at"`
-}
-
-type Transfer struct {
-	ID            int64 `json:"id"`
-	FromAccountID int64 `json:"from_account_id"`
-	ToAccountID   int64 `json:"to_account_id"`
-	// must be positive
-	Amount    int64              `json:"amount"`
-	CreatedAt pgtype.Timestamptz `json:"created_at"`
-}
-
 type User struct {
-	Username          string             `json:"username"`
-	HashedPassword    string             `json:"hashed_password"`
-	FullName          string             `json:"full_name"`
-	Email             string             `json:"email"`
-	PasswordChangedAt pgtype.Timestamptz `json:"password_changed_at"`
-	CreatedAt         pgtype.Timestamptz `json:"created_at"`
+	Username        string             `json:"username"`
+	Email           string             `json:"email"`
+	Fullname        string             `json:"fullname"`
+	Password        string             `json:"password"`
+	Role            string             `json:"role"`
+	Enable          int32              `json:"enable"`
+	CreatedDatetime time.Time `json:"created_datetime"`
+	UpdatedDatetime time.Time        `json:"updated_datetime"`
+}
+
+type UserConnection struct {
+	ID                     int32       `json:"id"`
+	Username               string      `json:"username"`
+	LastConnectionDateTime pgtype.Date `json:"last_connection_date_time"`
+	LastActionDateTime     pgtype.Date `json:"last_action_date_time"`
+	LoggedOnDateTime       pgtype.Date `json:"logged_on_date_time"`
+	ExpiredDateTime        pgtype.Date `json:"expired_date_time"`
+	SessionKey             string      `json:"session_key"`
+	ClientDevice           string      `json:"client_device"`
+	CreatedDatetime        pgtype.Date `json:"created_datetime"`
+	UpdatedDatetime        pgtype.Date `json:"updated_datetime"`
+}
+
+type UserPool struct {
+	Username             string `json:"username"`
+	LoginRetryCount      int32  `json:"login_retry_count"`
+	DuplicatedLoginCount int32  `json:"duplicated_login_count"`
 }

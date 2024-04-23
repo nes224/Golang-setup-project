@@ -7,49 +7,63 @@ package db
 
 import (
 	"context"
+	"time"
 
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (
+INSERT INTO "user" (
   username,
-  hashed_password,
-  full_name,
-  email
+  email,
+  fullname,
+  password,
+  role,
+  enable,
+  created_datetime,
+  updated_datetime
 ) VALUES (
-  $1, $2, $3, $4
-) RETURNING username, hashed_password, full_name, email, password_changed_at, created_at
+  $1, $2, $3, $4, $5, $6, $7, $8
+) RETURNING username, email, fullname, password, role, enable, created_datetime, updated_datetime
 `
 
 type CreateUserParams struct {
-	Username       string `json:"username"`
-	HashedPassword string `json:"hashed_password"`
-	FullName       string `json:"full_name"`
-	Email          string `json:"email"`
+	Username        string             `json:"username"`
+	Email           string             `json:"email"`
+	Fullname        string             `json:"fullname"`
+	Password        string             `json:"password"`
+	Role            string             `json:"role"`
+	Enable          int32              `json:"enable"`
+	CreatedDatetime time.Time `json:"created_datetime"`
+	UpdatedDatetime time.Time        `json:"updated_datetime"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, createUser,
 		arg.Username,
-		arg.HashedPassword,
-		arg.FullName,
 		arg.Email,
+		arg.Fullname,
+		arg.Password,
+		arg.Role,
+		arg.Enable,
+		arg.CreatedDatetime,
+		arg.UpdatedDatetime,
 	)
 	var i User
 	err := row.Scan(
 		&i.Username,
-		&i.HashedPassword,
-		&i.FullName,
 		&i.Email,
-		&i.PasswordChangedAt,
-		&i.CreatedAt,
+		&i.Fullname,
+		&i.Password,
+		&i.Role,
+		&i.Enable,
+		&i.CreatedDatetime,
+		&i.UpdatedDatetime,
 	)
 	return i, err
 }
 
 const getUser = `-- name: GetUser :one
-SELECT username, hashed_password, full_name, email, password_changed_at, created_at FROM users
+SELECT username, email, fullname, password, role, enable, created_datetime, updated_datetime FROM "user"
 WHERE username = $1 LIMIT 1
 `
 
@@ -58,47 +72,13 @@ func (q *Queries) GetUser(ctx context.Context, username string) (User, error) {
 	var i User
 	err := row.Scan(
 		&i.Username,
-		&i.HashedPassword,
-		&i.FullName,
 		&i.Email,
-		&i.PasswordChangedAt,
-		&i.CreatedAt,
-	)
-	return i, err
-}
-
-const updateUser = `-- name: UpdateUser :one
-UPDATE users
-SET
-  hashed_password = COALESCE($1, hashed_password),
-  password_changed_at = COALESCE($2, password_changed_at),
-  full_name = COALESCE($3, full_name),
-  email = COALESCE($4, email)
-RETURNING username, hashed_password, full_name, email, password_changed_at, created_at
-`
-
-type UpdateUserParams struct {
-	HashedPassword    pgtype.Text        `json:"hashed_password"`
-	PasswordChangedAt pgtype.Timestamptz `json:"password_changed_at"`
-	FullName          pgtype.Text        `json:"full_name"`
-	Email             pgtype.Text        `json:"email"`
-}
-
-func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, updateUser,
-		arg.HashedPassword,
-		arg.PasswordChangedAt,
-		arg.FullName,
-		arg.Email,
-	)
-	var i User
-	err := row.Scan(
-		&i.Username,
-		&i.HashedPassword,
-		&i.FullName,
-		&i.Email,
-		&i.PasswordChangedAt,
-		&i.CreatedAt,
+		&i.Fullname,
+		&i.Password,
+		&i.Role,
+		&i.Enable,
+		&i.CreatedDatetime,
+		&i.UpdatedDatetime,
 	)
 	return i, err
 }
